@@ -1,0 +1,1 @@
+{"dependencies":{"autocannon":"^8.0.0","pg":"^8.13.0"},"name":"hack4hack-load","private":true,"scripts":{"run":"node run.mjs","seed":"node seed.mjs"},"type":"module","version":"0.1.0"}

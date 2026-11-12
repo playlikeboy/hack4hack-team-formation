@@ -1,0 +1,39 @@
+{
+  "runAt": "2026-11-12T04:07:37.266Z",
+  "baseUrl": "http://127.0.0.1:3000",
+  "boardPass": {
+    "connections": 100,
+    "durationSeconds": 30,
+    "requestsPerSecond": 1981.67,
+    "totalRequests": 59441,
+    "errors": 0,
+    "timeouts": 0,
+    "latencyMs": {
+      "mean": 50.02,
+      "p50": 42,
+      "p75": 55,
+      "p90": 77,
+      "p97_5": 107,
+      "p99": 146,
+      "max": 472
+    },
+    "statusCounts": {
+      "2xx": 59441,
+      "4xx": 0,
+      "5xx": 0
+    },
+    "throughputBytesPerSecond": 56836642.14
+  },
+  "mixedPass": {
+    "workers": 10,
+    "durationSeconds": 30,
+    "iterations": 153,
+    "errors": 0,
+    "latencyMs": {
+      "mean": 2007,
+      "p50": 2054,
+      "p95": 2914,
+      "p99": 3327
+    }
+  }
+}
