@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+/* Visible focus for keyboard users, everywhere — not just on links/buttons. */
+:focus-visible {
+  outline: 2px solid var(--color-indigo-600);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* System font stack: no webfont dependency, fast on a phone. */
+body {
+  font-family:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
