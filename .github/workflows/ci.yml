@@ -1,0 +1,67 @@
+# CI: install, typecheck, test (vitest + real Postgres), build.
+#
+# The test job's database is a throwaway postgres:16 service container with
+# the standard example credentials (postgres/postgres). It exists only for
+# the duration of the job and holds only scratch test data — no real secret.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready -U postgres
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/hack4hack_test
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: |
+          # Workspaces repo: one lockfile at the root. Prefer npm ci; fall
+          # back to npm install if the lockfile is not committed yet.
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: Typecheck server
+        run: npm run typecheck
+
+      - name: Typecheck client
+        # working-directory matters: `npm --prefix` does not change the
+        # command's cwd, so tsc would look for tsconfig.app.json at the root.
+        run: npm exec -- tsc --noEmit -p tsconfig.app.json
+        working-directory: client
+
+      - name: Test server (vitest + postgres service)
+        run: npm run test -w server
+
+      - name: Build server
+        run: npm run build -w server
+
+      - name: Build client
+        run: npm run build -w client

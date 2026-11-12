@@ -1,0 +1,13 @@
+# Dependencies and build output
+node_modules/
+dist/
+client/dist/
+
+# The built client, copied into server/public/ at Docker build time
+server/public/
+
+# Local environment (never commit real credentials)
+.env
+
+# Logs
+*.log

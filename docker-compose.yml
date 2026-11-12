@@ -1,0 +1,41 @@
+# One-command local stack: Postgres 16 + the app.
+#   docker compose up --build
+# App on http://localhost:3000, Postgres on localhost:5432.
+#
+# The database credentials here are the throwaway local-dev pair
+# (postgres/postgres) — the same convention CI uses. They are NOT used
+# anywhere else; production gets its DATABASE_URL as a hosting secret.
+# SESSION_COOKIE_SECURE stays false here because local traffic is HTTP.
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: hack4hack
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d hack4hack"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/hack4hack
+      PORT: "3000"
+      NODE_ENV: production
+      SESSION_COOKIE_SECURE: "false"
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:
